@@ -54,7 +54,8 @@
     <img src="./Copilot_20260529_205407.png" alt="ガチャを回す" id="gachaIcon" onclick="pickRandom()">
   </div>
  
-  <audio id="doorSound" src="./wavemaster-happy-birthday-jazz-171120.mp3" preload="auto"></audio>
+  <audio id="doorSound" src="./wavemaster-happy-birthday-jazz-171120.mp3" preload="auto" loop></audio>
+
   
   <!-- 結果表示 -->
   <div id="result"></div>
@@ -96,20 +97,21 @@
         document.getElementById('result').innerText = '⚠️ メニューの読み込みに失敗しました';
       });
 
+     let isSoundStarted = false;
+
     // ガチャを回す処理
     function pickRandom() {
+      if (!isSoundStarted) {
+        const sound = document.getElementById('doorSound');
+        sound.play().catch(error => console.error('音声再生エラー:', error));
+        isSoundStarted = true;
+      }
+   
       if (data.length === 0) {
         document.getElementById('result').innerText = '⚠️ メニューが読み込まれていません';
         return;
       }
       
-      // 音を再生
-      const sound = document.getElementById('doorSound');
-      sound.currentTime = 0;
-      sound.play().catch(error => {
-        console.error('音声再生エラー:', error);
-      });
-
       const item = data[Math.floor(Math.random() * data.length)];
 
       // mood2, mood3 は空欄なら表示しない
