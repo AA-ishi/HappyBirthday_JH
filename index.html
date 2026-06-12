@@ -125,6 +125,33 @@
 
       document.getElementById('result').innerText = text;
     }
+
+
+    // 長押し判定用
+    let pressTimer;
+    
+    const icon = document.getElementById('gachaIcon');
+    
+    // PC用
+    icon.addEventListener('mousedown', startPress);
+    icon.addEventListener('mouseup', cancelPress);
+    icon.addEventListener('mouseleave', cancelPress);
+    
+    // スマホ用
+    icon.addEventListener('touchstart', startPress);
+    icon.addEventListener('touchend', cancelPress);
+    
+    function startPress() {
+      pressTimer = setTimeout(() => {
+        // ★ 長押し成功 → 別ページへ
+        window.location.href = "./secret.html"; 
+      }, 700); // 長押し判定時間（700ms）
+    }
+    
+    function cancelPress() {
+      clearTimeout(pressTimer);
+    }
+
   </script>
 </body>
 </html>
