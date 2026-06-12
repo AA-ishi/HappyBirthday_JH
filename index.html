@@ -43,10 +43,11 @@
     
 <body>
   <h1>
-  お誕生日おめでとう<br>
-  ホソジュン！ </h1>
-  2026年6月の細野純子さんへ
+    お誕生日おめでとう<br>
+    ホソジュン！
   </h1>
+  2026年6月の細野純子さんへ
+
   <p class="subtext">アイコンをタップしてね</p>
 
   <!-- ガチャアイコン -->
@@ -54,14 +55,15 @@
     <img src="./Copilot_20260529_205407.png" alt="ガチャを回す" id="gachaIcon" onclick="pickRandom()">
   </div>
  
+  <!-- ループ再生する音 -->
   <audio id="doorSound" src="./wavemaster-happy-birthday-jazz-171120.mp3" preload="auto" loop></audio>
 
-  
   <!-- 結果表示 -->
   <div id="result"></div>
 
   <script>
     let data = [];
+    let isSoundStarted = false;
 
     // CSVファイルを自動読み込み
     fetch('./menu.csv')
@@ -72,25 +74,22 @@
         return response.text();
       })
       .then(text => {
-        const lines = text.trim().split('\n').slice(1); 
-        
-        // ヘッダー除去
+        // trim() を使わず、空行だけ除去する
+        const lines = text
+          .split('\n')
+          .filter(line => line.trim() !== '') // 空行除去
+          .slice(1); // ヘッダー除去
 
         data = lines.map(line => {
-          // カンマ区切りで配列化
           const cols = line.split(',');
 
-          // 足りない列は空文字で補完（5列にする）
           while (cols.length < 5) {
             cols.push("");
           }
 
           const [menu, comment, mood, mood2, mood3] = cols.map(v => v.trim());
-
           return { menu, comment, mood, mood2, mood3 };
-        })
-        // menu に値がある行だけ採用
-        .filter(item => item.menu);
+        }).filter(item => item.menu);
 
         console.log('CSV読み込み成功:', data);
       })
@@ -99,24 +98,23 @@
         document.getElementById('result').innerText = '⚠️ メニューの読み込みに失敗しました';
       });
 
-     let isSoundStarted = false;
-
     // ガチャを回す処理
     function pickRandom() {
+
+      // 最初のクリックでだけ音を鳴らす
       if (!isSoundStarted) {
         const sound = document.getElementById('doorSound');
         sound.play().catch(error => console.error('音声再生エラー:', error));
         isSoundStarted = true;
       }
-   
+
       if (data.length === 0) {
         document.getElementById('result').innerText = '⚠️ メニューが読み込まれていません';
         return;
       }
-      
+
       const item = data[Math.floor(Math.random() * data.length)];
 
-      // mood2, mood3 は空欄なら表示しない
       const text = [
         item.menu,
         item.comment,
