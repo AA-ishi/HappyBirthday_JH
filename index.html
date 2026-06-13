@@ -83,12 +83,12 @@
         data = lines.map(line => {
           const cols = line.split(',');
 
-          while (cols.length < 5) {
+          while (cols.length < 6) {
             cols.push("");
           }
 
-          const [menu, comment, mood, mood2, mood3] = cols.map(v => v.trim());
-          return { menu, comment, mood, mood2, mood3 };
+          const [menu, comment, mood, mood2, mood3, name] = cols.map(v => v.trim());
+          return { menu, comment, mood, mood2, mood3, name };
         }).filter(item => item.menu);
 
         console.log('CSV読み込み成功:', data);
